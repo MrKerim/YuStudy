@@ -1,4 +1,6 @@
 import { useState } from "react";
+
+import { Heroes1SVG } from "../components/Heroes1SVG";
 import Layout from "../components/Layout";
 
 export default function LandingPage() {
@@ -54,10 +56,8 @@ export default function LandingPage() {
 				<p className="text-gray-700 text-xl md:text-3xl mb-10">
 					Ders takibini eğlenceli hâle getir. Başarıya doğru bir session başlat.
 				</p>
-				<img
-					src="heroes1.svg"
-					className=" mb-24 border-b-2 pb-6 border-gray-300 w-auto"
-				/>
+
+				<Heroes1SVG className="mb-24 border-b-2 pb-6 border-gray-300 w-auto" />
 
 				<h1 className="text-3xl md:text-5xl font-semibold ">
 					Başarılarını görselleştir,
