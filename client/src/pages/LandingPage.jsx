@@ -4,10 +4,32 @@ import Layout from "../components/Layout";
 export default function LandingPage() {
 	const [email, setEmail] = useState("");
 	const [submitted, setSubmitted] = useState(false);
+	const [errorEmail, setErrorEmail] = useState(false);
 
 	const handleSubmit = async () => {
 		if (email === "") return;
 		if (submitted) return;
+
+		// Valdiation
+		const checkEmailUrl =
+			"https://emailvalidation.abstractapi.com/v1/?api_key=3b409c06e34a411f9b77db954dc51ffa&email=" +
+			encodeURIComponent(email);
+
+		try {
+			const response = await fetch(checkEmailUrl);
+			const data = await response.json();
+			if (data.is_valid_format.value === false) {
+				setErrorEmail(true);
+				return;
+			} else if (data.deliverability === "UNDELIVERABLE") {
+				setErrorEmail(true);
+				return;
+			}
+		} catch (error) {
+			console.error("Error validating email:", error);
+			return;
+		}
+
 		setSubmitted(true);
 		console.log("Email submitted:", email);
 		const url =
@@ -87,16 +109,27 @@ export default function LandingPage() {
 						Uygulamamız hayata geçtiğinde ilk sen haberder ol.
 					</p>
 					<div className="flex flex-col gap-6 max-w-sm mx-auto">
-						<input
-							type="email"
-							placeholder="E-posta adresininiz"
-							value={email}
-							onChange={(e) => {
-								setEmail(e.target.value);
-								setSubmitted(false);
-							}}
-							className="border px-3 py-2 rounded-lg outline-none  border-gray-300 focus:border-blue-500"
-						/>
+						<div className="flex flex-col">
+							<input
+								type="email"
+								placeholder="E-posta adresininiz"
+								value={email}
+								onChange={(e) => {
+									setEmail(e.target.value);
+									setSubmitted(false);
+									setErrorEmail(false);
+								}}
+								className={
+									"border px-3 pt-2 rounded-lg outline-none  border-gray-300 focus:border-blue-500 " +
+									(errorEmail ? " border-red-500" : "")
+								}
+							/>
+							{errorEmail && (
+								<p className="text-red-500 text-xs mt-2 md:text-sm  ">
+									Geçerli bir email adresi giriniz.
+								</p>
+							)}
+						</div>
 						<button
 							onClick={handleSubmit}
 							className={
